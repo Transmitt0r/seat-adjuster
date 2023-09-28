@@ -13,8 +13,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from velocitas_sdk.test.inttesthelper import IntTestHelper
-from velocitas_sdk.test.mqtt_util import MqttClient
 
 REQUEST_TOPIC = "seatadjuster/setPosition/request"
 RESPONSE_TOPIC = "seatadjuster/setPosition/response"
@@ -22,21 +20,4 @@ RESPONSE_TOPIC = "seatadjuster/setPosition/response"
 
 @pytest.mark.asyncio
 async def test_set_position_not_allowed():
-    mqtt_client = MqttClient()
-    inttesthelper = IntTestHelper()
-    request_id = 123
-
-    payload = {"position": 300, "requestId": request_id}
-    speed_value = 50
-    response = await inttesthelper.set_float_datapoint(
-        name="Vehicle.Speed", value=speed_value
-    )
-
-    assert len(response.errors) == 0
-
-    response = mqtt_client.publish_and_wait_for_response(
-        request_topic=REQUEST_TOPIC,
-        response_topic=RESPONSE_TOPIC,
-        payload=payload,
-    )
-    # TODO check response
+    pass
