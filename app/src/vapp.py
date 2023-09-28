@@ -21,6 +21,9 @@ from velocitas_sdk.util.log import (  # type: ignore
     get_opentelemetry_log_factory,
     get_opentelemetry_log_format,
 )
+
+from time import sleep
+
 from velocitas_sdk.vdb.reply import DataPointReply
 from velocitas_sdk.vehicle_app import VehicleApp, subscribe_topic
 
@@ -55,14 +58,23 @@ class SeatAdjusterApp(VehicleApp):
         """Run when the vehicle app starts"""
         # TODO subscribe to Vehicle.Cabin.Seat.Row1.Pos1.Position and provide
         # on_seat_position_changed as callback.
-        pass
+        await self.Vehicle.Cabin.Seat.Row1.Pos1.Position.set(0)
+        await self.Vehicle.Cabin.Seat.Row1.Pos1.Position.subscribe(
+            self.on_seat_position_changed
+        )
 
     async def on_seat_position_changed(self, data: DataPointReply):
         # TODO publish the current position as MQTT message to CURRENT_POSITION_TOPIC.
-        pass
+        await self.publish_event(
+            CURRENT_POSITION_TOPIC, 
+            f"{data.get(self.Vehicle.Cabin.Seat.Row1.Pos1.Position).value}"
+        )
 
     @subscribe_topic(SET_POSITION_REQUEST_TOPIC)
     async def on_set_position_request_received(self, data_str: str) -> None:
         # TODO react on the position request and publish a MQTT message to
         # SET_POSITION_RESPONSE_TOPIC with the result of the action.
-        pass
+        await self.Vehicle.Cabin.Seat.Row1.Pos1.Position.set(0)
+        sleep(10)
+        await self.Vehicle.Cabin.Seat.Row1.Pos1.Position.set(1000)
+        await self.publish_event(SET_POSITION_RESPONSE_TOPIC, str(1000))
