@@ -15,15 +15,13 @@
 """A sample Velocitas vehicle app for adjusting seat position."""
 
 import logging
+from time import sleep
 
 from vehicle import Vehicle  # type: ignore
 from velocitas_sdk.util.log import (  # type: ignore
     get_opentelemetry_log_factory,
     get_opentelemetry_log_format,
 )
-
-from time import sleep
-
 from velocitas_sdk.vdb.reply import DataPointReply
 from velocitas_sdk.vehicle_app import VehicleApp, subscribe_topic
 
@@ -66,8 +64,8 @@ class SeatAdjusterApp(VehicleApp):
     async def on_seat_position_changed(self, data: DataPointReply):
         # TODO publish the current position as MQTT message to CURRENT_POSITION_TOPIC.
         await self.publish_event(
-            CURRENT_POSITION_TOPIC, 
-            f"{data.get(self.Vehicle.Cabin.Seat.Row1.Pos1.Position).value}"
+            CURRENT_POSITION_TOPIC,
+            f"{data.get(self.Vehicle.Cabin.Seat.Row1.Pos1.Position).value}",
         )
 
     @subscribe_topic(SET_POSITION_REQUEST_TOPIC)
